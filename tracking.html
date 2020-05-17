@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<head>
+    
+    <title>My Google Map</title>
+    
+    <style type="text/css">
+        #map{
+            width: 400px;
+            height: 400px;
+        }
+        #map2{
+            width: 400px;
+            height: 400px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="header">123</div>
+    <div id ="map"></div>
+    <div id ="map2"></div>
+    
+    <script type="text/javascript">
+        x = navigator.geolocation;
+        x.getCurrentPosition(success, failure);
+        function initMap(){
+            var options = {
+                zoom:13,
+                center:{lat:25.03746,lng:121.564558}
+            }
+            var map = new google.maps.Map(document.getElementById('map2'), options);
+        }
+        function success(position){
+            var myLat = position.coords.latitude;
+            var myLong = position.coords.longitude;
+
+            var coord = new google.maps.LatLng(myLat,myLong);
+
+            var mapOption = {
+                zoom:13,
+                center: coords,
+                myTypeId :google.maps.MapTypeId.ROADMAP
+            }
+            var map = new google.maps.Map(document.getElementById("map"),mapOptions);
+            var marker = new google.maps.Marker({map:map,position:coords});
+        }
+
+        function failure(){   
+            
+        }
+        
+        function makeRequest(){
+            xhr = new XMLHttpRequest();
+            xhr.open('POST', 'https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyDNVnZR1pHaMoJ_artCh6dop5wmBnlz3DM');
+            xhr.onload = function () {
+
+                var response = JSON.parse(this.responseText);
+                console.log(response);
+            }
+            xhr.send();
+        }
+    </script>
+    <script src async 
+    defer ="https://maps.googleapis.com/maps/api/js?key=AIzaSyAffDps_VHnNGKDgcLEnMzEh6njilYINvE&callback=initMap">
+    </script>
+    
+</body>
+</html>
