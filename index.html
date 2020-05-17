@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>My Google Map</title>
+    <link rel="stylesheet" type="text/css" href="layout.css" />
+
+</head>
+<body>
+  <div id="wrapper">
+    <div id="header">
+      My Google Map
+    </div>
+    
+    <div id="map"></div>
+    <div id="footer">2020/05/05</div>
+  </div>
+  <div id="wrapper2">
+    <div id="navbar"></div>
+  </div>
+  
+  
+  <script>
+    let mylat=""
+    function initMap(){
+      // Map options
+      var options = {
+        zoom:13,
+        center:{lat:25.03746,lng:121.564558}
+      }
+
+      // New map
+      var map = new google.maps.Map(document.getElementById('map'), options);
+
+      if(navigator.geolocation) {
+
+      // 使用者不提供權限，或是發生其它錯誤
+      function error() {
+        alert('無法取得你的位置');
+      }
+      // 使用者允許抓目前位置，回傳經緯度
+      function success(position) {
+        mylat = position.coords.latitude
+        console.log(position.coords.latitude, position.coords.longitude);
+        alert("lat:"+position.coords.latitude+"\n"+"lng:"+position.coords.longitude);
+      }
+      // 跟使用者拿所在位置的權限
+      navigator.geolocation.getCurrentPosition(success, error);
+      
+
+      } else {
+      alert('Sorry, 你的裝置不支援地理位置功能。')
+      }
+      console.dir(mylat)
+      // Array of markers
+      var markers = [
+        {
+          coords:{lat:25.033671,lng:121.564427},
+          iconImage:'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png',
+          content:'<h1>台北101</h1>'
+        },
+        {
+          coords:{lat:25.047778,lng:121.517222},
+          content:'<h1>台北車站</h1>'
+        },
+        {
+          coords:{lat:25.037491,lng:121.564088},
+          content:'<h1>台北市政府</h1>'
+        },
+        {
+          coords:{lat:25.035027,lng:121.521934},
+          content:'<h1>中正紀念堂</h1>'
+        },
+        {
+          coords:{lat:parseFloat(mylat),lng:121.46479950000001},
+          content:'<h1>中正紀念堂</h1>'
+        },
+        
+      
+       
+      ];
+      // Loop through markers
+      for(var i = 0;i < markers.length;i++){
+        // Add marker
+        addMarker(markers[i]);
+      }
+
+      // Add Marker Function
+      function addMarker(props){
+        var marker = new google.maps.Marker({
+          position:props.coords,
+          map:map,
+          icon:props.iconImage
+        });
+
+        // Check for customicon
+        if(props.iconImage){
+          // Set icon image
+          marker.setIcon(props.iconImage);
+        }
+
+        // Check content
+        if(props.content){
+          var infoWindow = new google.maps.InfoWindow({
+            content:props.content
+          });
+
+          marker.addListener('click', function(){
+            infoWindow.open(map, marker);
+          });
+        }
+      }
+      
+    }
+    
+  
+    function makeRequest(){
+      xhr = new XMLHttpRequest();
+      xhr.open('POST', 'https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyAffDps_VHnNGKDgcLEnMzEh6njilYINvE');
+      xhr.onload = function () {
+
+          var response = JSON.parse(this.responseText);
+          console.log(response);
+      }
+      xhr.send();
+    }
+
+  </script>
+
+  <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAffDps_VHnNGKDgcLEnMzEh6njilYINvE&callback=initMap">
+    </script>
+</body>
+</html>
